@@ -76,6 +76,9 @@ More info: [Deployment](https://hexo.io/docs/deployment.html)
 	hexo version  #查看Hexo的版本
 	hexo publish [layout] postname # 从草稿中发布
 
+	//git
+	npm install hexo-deployer-git --save
+
 	hexo deploy -g  #生成加部署
 	hexo server -g  #生成加预览
 ```
