@@ -51,11 +51,17 @@ More info: [Deployment](https://hexo.io/docs/deployment.html)
 
 ### 安装
 ``` bash
+	//安装nvm,nvm是一个nodejs的版本管理器
 	curl https://raw.github.com/creationix/nvm/master/install.sh | sh
+	//安装nodejs 4以上的稳定版，官方有两个版本，目前是4.4.5稳定版本，这里自带的也会安装npm对应的版本
 	nvm install 4
 
 	//如果已经安装，直接安装hexo客户端
 	npm install -g hexo-cli
+	//有时候上面的安装命令不成功，是因为npm的源请求不到，这里安装一个国内的淘宝源
+	npm install -g cnpm --registry=https://registry.npm.taobao.org
+	//安装完成之后,cnpm 就可以使用了
+	cnpm install -g hexo-cli
 
 ```
 ### 常用命令
