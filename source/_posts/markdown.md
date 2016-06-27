@@ -1,5 +1,5 @@
 ---
-title: sublime text 3 Markdown
+title: Markdown
 date: 2016-06-15 00:43:20
 tags:
 - markdown
@@ -7,6 +7,7 @@ tags:
 categories:
 ---
 
+## markdown 在 sublime text 3 中使用
 
 作为Windows/Mac/Linux下强大的文本编辑器，st提供了对Markdown语言的支持。通过设置可实现markdown预览和转换功能。而本文介绍的Markdown Preview支持Mathjax语法和目录自动生成。(Windows下）,
 打开st，按下组合键Control + `，出现控制台，输入
@@ -40,7 +41,7 @@ st支持自定义快捷键，markdown preview默认没有快捷键，我们可�
 在Preferences ->Package Settings->Markdown Preview->Setting Default中的第31行和36行找到
 
 ``` config
-	
+
 	"enable_mathjax": false,
 	"enable_highlight": false,
 
@@ -50,5 +51,27 @@ st支持自定义快捷键，markdown preview默认没有快捷键，我们可�
 关于目录生成，只要文章是按照markdown语法写作的。在需要生成目录的地方写
 [TOC]
 即可。
- 0
-  
+
+## markdown 语法参考
+
+@changyuan
+
+Emphasis, aka italics, with *asterisks* or _underscores_.
+Strong emphasis, aka bold, with **asterisks** or __underscores__.
+Combined emphasis with **asterisks and _underscores_**.
+Strikethrough uses two tildes. ~~Scratch this.~~
+
+[参考1](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
+[参考2](https://guides.github.com/features/mastering-markdown/)
+
+
+## emoji表情参考
+:smile::thumbsup::thumbsup:
+~~emo~~
+[emoji表情参考](http://www.emoji-cheat-sheet.com/)
+
+
+## atom中的试用
+> favorite atom packages
+> most popular atom packages
+> must have packages for developer
