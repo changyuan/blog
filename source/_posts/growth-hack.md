@@ -1,10 +1,11 @@
 ---
 title: 做好产品
-date: 2016-06-23T11:38:22.000Z
-updated: 2016-06-23T11:38:22.000Z
-tags: null
-categories: null
+date: 2016-06-23 11:38:22
+updated: 2016-06-23 11:38:22
+tags:
+categories:
 ---
+
 
 # Growth Hack = 把产品做好
 
