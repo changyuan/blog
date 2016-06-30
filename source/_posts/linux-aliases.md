@@ -31,6 +31,7 @@ Terminal 输入 `alias` 之后可以查看已经有的别名设置
 	alias j="jobs"
 	……
 ```
+<!-- more -->
 
 网络上很多人整理了常用的操作
 
@@ -61,4 +62,3 @@ Terminal 输入 `alias` 之后可以查看已经有的别名设置
 	fi
 ```
 只需要往 `.bash_aliases` 文件中写自己的别名就可以了
-

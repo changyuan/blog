@@ -73,3 +73,9 @@ deploy:
   repository: git@github.com:changyuan/changyuan.github.io.git
   branch: master
   # message: Site updated: {{ now('YYYY-MM-DD HH:mm:ss') }}
+
+# duoshuo_info:
+# duoshuo_shortname: icyy
+
+# Share
+# duoshuo_share: true

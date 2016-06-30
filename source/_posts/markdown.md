@@ -5,6 +5,7 @@ tags:
 - markdown
 - sublime
 categories:
+- tools
 ---
 
 ## markdown 在 sublime text 3 中使用
@@ -69,9 +70,3 @@ Strikethrough uses two tildes. ~~Scratch this.~~
 :smile::thumbsup::thumbsup:
 ~~emo~~
 [emoji表情参考](http://www.emoji-cheat-sheet.com/)
-
-
-## atom中的试用
-> favorite atom packages
-> most popular atom packages
-> must have packages for developer
