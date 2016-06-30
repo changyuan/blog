@@ -19,9 +19,9 @@ $ hexo new article
 $ hexo new page tags
 $ hexo new page tags
 ```
-
-More info: [Writing](https://hexo.io/docs/writing.html)
 <!-- more -->
+More info: [Writing](https://hexo.io/docs/writing.html)
+
 ## Run server
 
 ```bash

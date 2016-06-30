@@ -10,13 +10,13 @@ categories:
 
 Terminal 输入 `alias` 之后可以查看已经有的别名设置
 
-如果要设置自己的别名如下：
+如果要设置自己的别名如下：<!-- more -->
 ```bash
 	alias d='date' #起别名
 	unalias d  #删除别名
 
 	alias ..="cd .."
-	alias ...="cd ../.."
+	alias ...="cd ../.."  
 	alias ....="cd ../../.."
 	alias .....="cd ../../../.."
 	alias ~="cd ~" # `cd` is probably faster to type though
@@ -31,7 +31,7 @@ Terminal 输入 `alias` 之后可以查看已经有的别名设置
 	alias j="jobs"
 	……
 ```
-<!-- more -->
+
 
 网络上很多人整理了常用的操作
 

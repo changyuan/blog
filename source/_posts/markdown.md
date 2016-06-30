@@ -12,6 +12,8 @@ categories:
 
 作为Windows/Mac/Linux下强大的文本编辑器，st提供了对Markdown语言的支持。通过设置可实现markdown预览和转换功能。而本文介绍的Markdown Preview支持Mathjax语法和目录自动生成。(Windows下）,
 打开st，按下组合键Control + `，出现控制台，输入
+<!-- more -->
+
 ``` bash
 
 	import  urllib.request,os;pf='Package Control.sublime-package';ipp=sublime.installed_packages_path();urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler()));open(os.path.join(ipp,pf),'wb').write(urllib.request.urlopen('http://sublime.wbond.net/'+pf.replace(' ','%20')).read())
