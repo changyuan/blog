@@ -7,3 +7,4 @@ categories: null
 ---
 
 [批判性思维](http://www.criticalthinking.org/)
+[critical thinking](https://book.douban.com/subject/2591434/)
