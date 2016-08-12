@@ -4,7 +4,6 @@ date: 2016-06-27T15:58:41.000Z
 updated: 2016-06-27T15:58:41.000Z
 tags: null
 categories: null
-
 ---
 
 ## how to use atom
@@ -13,7 +12,7 @@ categories: null
 
 在编辑器中，`Command Palette` 中输入 `init script`，由于这个输入框里使用的是 `Fuzy matching`, 你输入到 s 的时候，估计 `Application: Open Your Init Script` 已经排在第一位了，当它是第一位的时候，直接回车键就可以了...... 在 `init script` 文件里拷贝粘贴以下代码：
 <!-- more -->
-```
+```coffeescript
  # move cursor across the ending symbols...
  EndingSymbolRegex = /\s*[)}>\]/'";:=-]/
  atom.commands.add 'atom-text-editor', 'custom:jump-over-symbol': (event) ->
@@ -44,11 +43,14 @@ categories: null
 ```
 // apm是atom提供的一个安装工具
 apm install atom-yii2 //网上找的的一个yii2的snippets，还有laravel的，php的
-
 ```
 可以在atom官方网站或者github中找到
-- (参考)[https://atom.io/packages/snippets]
-- (参考)[https://scotch.io/bar-talk/best-of-atom-features-plugins-acting-like-sublime-text]
+
+[参考1]: https://atom.io/packages/snippets
+[参考2]: https://scotch.io/bar-talk/best-of-atom-features-plugins-acting-like-sublime-text
+
+
+
 ## atom packages
 GOOGLE 下面的词汇，会得到一些常用的包
 > favorite atom packages

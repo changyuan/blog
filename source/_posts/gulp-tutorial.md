@@ -15,7 +15,7 @@ categories:
   //查看已经安装的插件
   npm list
 ```
-
+<!-- more -->
 ### 安装gulp,新建package.json文件
 
 全局安装 `cnpm install gulp -g` ,之后  `cnpm init` 初始化, `cnpm install gulp --save-dev`

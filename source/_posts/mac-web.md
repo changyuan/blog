@@ -19,6 +19,15 @@ categories:
 ```
 > [官网](http://brew.sh/)
 
+<!--more-->
+## zsh bash
+```bash
+   sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+```
+｀cat /etc/shells｀ 查看所有的sh
+`chsh -s /bin/bash`  或者 `chsh -s /bin/zsh`
+
+[zsh](http://ohmyz.sh/)
 ## apache
 mac自带一个版本，如果安装新的
 ```bash
@@ -112,6 +121,7 @@ of this formula.
 
 To have launchd start homebrew/php/php56 now and restart at login:
   brew services start homebrew/php/php56
+  brew services restart homebrew/php/php56
 
 
 
