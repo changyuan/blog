@@ -1,5 +1,5 @@
 ---
-title: Inverted index for python
+title: 倒排索引
 date: 2016-08-11 11:19:01
 updated: 2016-08-11 11:19:01
 tags:
@@ -9,7 +9,7 @@ categories:
 ### 正排索引和倒排索引
 
 **倒排索引**（英语：Inverted index），也常被称为**反向索引**、**置入档案**或**反向档案**，被用来存储在全文搜索下某个单词在一个文档或者一组文档中的存储位置的映射。它是文档检索系统中最常用的数据结构。
-
+<!--more-->
 有两种不同的反向索引形式：
 
 一条记录的水平反向索引（或者反向档案索引）包含每个引用单词的文档的列表。
@@ -28,9 +28,9 @@ categories:
 
   ​我们就能得到下面的反向文件索引：
 
-- ![{\displaystyle T_{0}=}](https://wikimedia.org/api/rest_v1/media/math/render/svg/1ab3d9202f18a678affe9a339511bef0a7b8b110)`"it is what it is"`
-- ![{\displaystyle T_{1}=}](https://wikimedia.org/api/rest_v1/media/math/render/svg/57ac5840245616f79874f4635b3bcb2e3da344dd)`"what is it"`
-- ![{\displaystyle T_{2}=}](https://wikimedia.org/api/rest_v1/media/math/render/svg/5713cf5634b3846b4d68c3383b65db289511d8bf)`"it is a banana"`
+- ![{\displaystyleT_{0}=}](https://wikimedia.org/api/rest_v1/media/math/render/svg/1ab3d9202f18a678affe9a339511bef0a7b8b110)`"it is what it is"`
+- ![{\displaystyleT_{1}=}](https://wikimedia.org/api/rest_v1/media/math/render/svg/57ac5840245616f79874f4635b3bcb2e3da344dd)`"what is it"`
+- ![{\displaystyleT_{2}=}](https://wikimedia.org/api/rest_v1/media/math/render/svg/5713cf5634b3846b4d68c3383b65db289511d8bf)`"it is a banana"`
 
 ```
 "a":      {2}
@@ -71,7 +71,7 @@ categories:
   　　这个简单索引功能可以用于小数据，例如索引几千个文档。然而它有两点限制：
   　　1）需要有足够的内存来存储倒排表，对于搜索引擎来说， 都是G级别数据，特别是当规模不断扩大时 ,我们根本不可能提供这么多的内存。
   　　2）算法是顺序执行，不便于并行处理。
-  ![img](http://f.hiphotos.baidu.com/baike/s%3D250/sign=50c9ed261138534388cf8024a312b01f/9c16fdfaaf51f3ded16ca72e95eef01f3b297999.jpg)
+
 
 ####  合并法
   归并法[4]  ,即每次将内存中数据写入磁盘时，包括词典在内的所有中间结果信息都被写入磁盘，这样内存所有内容都可以被清空，后续建立索引可以使用全部的定额内存。
@@ -84,9 +84,6 @@ categories:
   合并流程
   合并流程
   索引创建过程中的页面分析 ,特别是中文分词为主要时间开销。算法的第二步相对很快。这样创建算法的优化集中在中文分词效率上。
-  ![img](http://e.hiphotos.baidu.com/baike/s%3D220/sign=ba8ad76cfcfaaf5180e386bdbc5594ed/7e3e6709c93d70cf4f56d547f9dcd100bba12bcf.jpg)
-  ![img](http://f.hiphotos.baidu.com/baike/s%3D250/sign=2f1800972f738bd4c021b534918a876c/91529822720e0cf3226631b10b46f21fbf09aae3.jpg)
-
 
 >[参考1]: http://blog.csdn.net/hguisu/article/details/7962350
 >[baike]: http://baike.baidu.com/view/676861.htm
