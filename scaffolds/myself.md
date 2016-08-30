@@ -3,8 +3,7 @@ title: {{ title }}
 date: {{ date }}
 updated : {{ date }}
 comments : true
-permalink : 
-	
+permalink :
 tags:
 categories:
 ---
