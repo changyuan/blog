@@ -7,7 +7,7 @@ categories:
 ---
 
 ### 创建mysql函数
-
+<!-- more -->
 ``` mysql
 
 CREATE FUNCTION `f_to_pinyin`(NAME VARCHAR(255) CHARSET gbk) RETURNS varchar(255) CHARSET gbk
