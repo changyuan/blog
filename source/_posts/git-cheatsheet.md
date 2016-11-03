@@ -13,6 +13,7 @@ categories:
 - git add file.txt Start tracking file.txt
 - git add main.txt Stage modified file main.txt
 - git diff Show what's changed but not yet staged
+<!-- more -->
 - git commit Commit changes
 - git commit -a Stage files and commit
 - git mv main.txt file.txt Rename main.txt to file.txt
@@ -35,6 +36,12 @@ categories:
 - git checkout -b fix1 origin/fix1 Create local branch 'fix1' based off origin branch
 - git checkout --track origin/fix2 Create tracking branch 'fix2' based off origin
 - git push origin :fix2 Delete remote branch 'fix2' from origin
+
+### 撤销修改
+- git checkout file-name
+- git checkout .
+- git checkout *.php
+
 ### Merging / Rebasing
 - git mergetool Use graphical merge tool
 - git commit Finalize merge after resolving conflicts
