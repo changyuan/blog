@@ -3,6 +3,7 @@ title: MangoDB 入门
 date: 2016-11-02 17:27:38
 updated: 2016-11-02 17:27:38
 tags:
+  - db
 categories:
 ---
 
@@ -507,7 +508,7 @@ db.customers.aggregate([{$group : {_id : "$by_user", num_tutorial : {$sum : 1}}}
 db.customers.aggregate([{$group : {_id: "$age",num:{$sum:2}}}])
 db.customers.aggregate([{$group : {_id: "$age",num:{$avg:1}}}])
 ```
-###### 管道的概念
+##### 管道的概念
 管道在Unix和Linux中一般用于将当前命令的输出结果作为下一个命令的参数。
 >- $project：修改输入文档的结构。可以用来重命名、增加或删除域，也可以用于创建计算结果以及嵌套文档。
 >- $match：用于过滤数据，只输出符合条件的文档。`$match`使用MongoDB的标准查询操作。
@@ -547,7 +548,7 @@ db.customers.aggregate([{$group : {_id: "$age",num:{$avg:1}}}])
 
 ```
 
-#### mapReduce 
+### mapReduce 
 Map-Reduce是一种计算模型，简单的说就是将大批量的工作（数据）分解（MAP）执行，然后再将结果合并成最终结果（REDUCE）。
 > map ：映射函数 (生成键值对序列,作为 reduce 函数参数)。
 > reduce 统计函数，reduce函数的任务就是将key-values变成key-value，也就是把values数组变成一个单一的值value。。
@@ -579,7 +580,7 @@ db.posts.mapReduce(
 )
 
 ```
-#### 游标 
+### 游标 
 针对这样的操作，result其实并没有获取到customers中的文档，而是申明一个“查询结构”,for或者next()一次性加载过来，然后让游标逐行读取，当我们枚举完了之后，游标销毁。
 var result = db.customers.find().limit(2).skip(1)
 var result = db.customers.find();
@@ -588,7 +589,7 @@ result.forEach(function(curr){
 });
 
 
-#### 索引 
+### 索引 
 ```
 -- 性能分析函数
 db.customers.find({age:7}).explain();
@@ -611,9 +612,9 @@ db.customers.dropIndexes();
 ```
 
 
-#### Mongodb复制
+### Mongodb复制
 
-##### 主从复制
+#### 主从复制
 通过主数据库的`OpLog`日志来复制,如果配置成功可看见`sync_pullOpLog`
 ```sql
 -- 一主两从
@@ -622,7 +623,7 @@ mongod --dbpath=xxxx --port=8888 --slave --source=127.0.0.1:27017
 mongod --dbpath=xxxx --port=8887 --slave --source=127.0.0.1:27017
 ```
 
-##### 副本集（ --replSet）
+#### 副本集（ --replSet）
 1. 该集群没有特定的主数据库
 2. 如果哪个主数据库宕机了，集群中就会推选出一个从属数据库作为主数据库顶上，这就具备了自动故障恢复功能
 > N 个节点的集群
@@ -666,16 +667,16 @@ rs.addArb("192.168.1.2:4444")
 -- 最后查看副本集状态使用 `rs.status()` 命令
 
 ```
-###### 副本集添加成员
+#### 副本集添加成员
 `rs.add("mongod1.net:27017")`
 判断当前运行的Mongo服务是否为主节点可以使用命令`db.isMaster()`,MongoDB的副本集与我们常见的主从有所不同，主从在主机宕机后所有服务将停止，而副本集在主机宕机后，副本会接管主节点成为主节点，不会出现宕机，无缝切换
 
-#### 分片技术（Shard）
+### 分片技术（Shard）
 
 
 
 
-#### 安全管理
+### 安全管理
 1. 以安全认证模式启动
 mongod --auth --dbpath /usr/mongo/data -f /var/mongo.log
 使用--auth选项启动mongod进程即可启用认证模式。
@@ -715,7 +716,7 @@ db.$cmd.sys.unlock.findOne()`
 `db.currentOp()`
 
 
-#### 数据备份、恢复与迁移管理 
+### 数据备份、恢复与迁移管理 
 ```sql
 -- 备份全部数据库
 mkdir testbak
@@ -735,8 +736,9 @@ mongorestore -d pagedb --drop
 mongorestore -d pagedb -c page --drop
 -- 向MongoDB导入数据
 mongoimport -d pagedb -c page --type csv --headerline --drop < csvORtsvFile.csv
-将文件csvORtsvFile.csv的数据导入到pagedb数据库的page集合中，使用cvs或tsv文件的列名作为集合的列名。需要注意的是，使用`--headerline`选项时，只支持csv和tsv文件。
---type支持的类型有三个：csv、tsv、json
+-- 将文件csvORtsvFile.csv的数据导入到pagedb数据库的page集合中，使用cvs或tsv文件的列名作为集合的列名。
+-- 需要注意的是，使用`--headerline`选项时，只支持csv和tsv文件。
+-- type支持的类型有三个：csv、tsv、json
 
 ```
 - [命令参考与更新](https://docs.mongodb.com/v3.2/tutorial/access-mongo-shell-help/)
