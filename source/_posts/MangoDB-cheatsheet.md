@@ -56,6 +56,62 @@ make;make install
 
 ```
 
+#### PHP代码
+##### 创建集合
+```php
+    $m = new \MongoClient();
+    $db = $m->selectDB("test");
+    $collection = $db->createCollection("my_col");
+```
+##### 插入文档
+```php    
+    $m = new \MongoClient();
+    $db = $m->selectDB("test");
+    $collection = $db->my_col;
+    $document = array(
+                "title" => "MongoDB",
+                "description" => "database",
+                "likes" => 100,
+                "url" => "http://www.baidu.com",
+                "by"=>"change.net"
+                );
+    $ret_ins  = $collection->insert($document);
+```
+
+##### 查找文档
+```php
+    $m = new \MongoClient();
+    $db = $m->selectDB("test");
+    $collection = $db->my_col;
+    $cursor = $collection->find();
+    foreach ($cursor as $document) {
+        echo $document["title"] . "\n";
+    }
+```
+##### 更新文档
+```php
+    $m = new \MongoClient();
+    $db = $m->selectDB("test");
+    $collection = $db->my_col;
+    $collection->update(array("title"=>"MongoDB"), array('$set'=>array("title"=>"MongoDB")));
+    $cursor = $collection->find();
+    foreach ($cursor as $document) {
+        echo $document["title"] . "\n";
+    }
+```
+##### 删除文档
+```php
+    $m = new \MongoClient();
+    $db = $m->selectDB("test");
+    $collection = $db->my_col;
+    $collection->remove(array("title"=>"MongoDB"),  array("justOne" => true));
+
+    $cursor = $collection->find();
+    foreach ($cursor as $document) {
+        echo $document["title"] . "\n";
+    }
+```
+
 ---
 ### 使用篇
 
@@ -432,6 +488,13 @@ db.col.find({"likes": {$gt:50}, $or: [{"by": "教程"},{"title": "MongoDB 教程
 //支持js
 db.customers.find({$where:function(){ return this.first_name=="jack"}})
 
+-- 正则查询
+
+db.customers.find({name:{$regex:"yaolan.com"}})
+-- 或者
+db.customers.find({name:/yaolan.com/})
+-- 不区分大小写
+db.customers.find({name:{$regex:"yaolan.com",$options:"$i"}})
 
 ```
 
@@ -593,6 +656,9 @@ result.forEach(function(curr){
 ```
 -- 性能分析函数
 db.customers.find({age:7}).explain();
+-- hint 强制使用索引
+db.customers.find({gender:"M"},{user_name:1,_id:0}).hint({gender:1,user_name:1})
+db.customers.find({gender:"M"},{user_name:1,_id:0}).hint({gender:1,user_name:1}).explain();
 
 -- 建立索引 (`ensureIndex` 将要被 `createIndex` 替代)
 db.customers.ensureIndex({"first_name":1})
@@ -672,6 +738,61 @@ rs.addArb("192.168.1.2:4444")
 判断当前运行的Mongo服务是否为主节点可以使用命令`db.isMaster()`,MongoDB的副本集与我们常见的主从有所不同，主从在主机宕机后所有服务将停止，而副本集在主机宕机后，副本会接管主节点成为主节点，不会出现宕机，无缝切换
 
 ### 分片技术（Shard）
+在Mongodb里面存在另一种集群(cluster)，就是分片技术,可以满足MongoDB数据量大量增长的需求。
+> 复制所有的写入操作到主节点
+> 延迟的敏感数据会在主节点查询
+> 单个副本集限制在12个节点
+> 当请求量巨大时会出现内存不足。
+> 本地磁盘不足
+> 垂直扩展价格昂贵
+
+![MongoDB Cluster](/images/mongo-cluster.jpg)
+>- Shard:用于存储实际的数据块，实际生产环境中一个shard server角色可由几台机器组个一个replica set承担，防止主机单点故障
+>- Config Server:mongod实例，存储了整个 ClusterMetadata，其中包括 chunk信息。
+>- Query Routers: 前端路由，客户端由此接入，且让整个集群看上去像单一数据库，前端应用可以透明使用。
+
+模拟在单机上启用不同的端口，分片
+```
+-- 服务器分布
+Shard Server 1：27020
+Shard Server 2：27021
+Shard Server 3：27022
+Shard Server 4：27023
+Config Server ：27100
+Route Process：40000
+
+-- 1. 启动Shard Server
+mkdir -p /www/mongoDB/shard/s0
+mkdir -p /www/mongoDB/shard/s1
+mkdir -p /www/mongoDB/shard/s2
+mkdir -p /www/mongoDB/shard/s3
+mkdir -p /www/mongoDB/shard/log
+
+/usr/local/mongoDB/bin/mongod --port 27020 --dbpath=/www/mongoDB/shard/s0 --logpath=/www/mongoDB/shard/log/s0.log --logappend --fork
+/usr/local/mongoDB/bin/mongod --port 27021 --dbpath=/www/mongoDB/shard/s1 --logpath=/www/mongoDB/shard/log/s1.log --logappend --fork
+/usr/local/mongoDB/bin/mongod --port 27022 --dbpath=/www/mongoDB/shard/s2 --logpath=/www/mongoDB/shard/log/s2.log --logappend --fork
+/usr/local/mongoDB/bin/mongod --port 27023 --dbpath=/www/mongoDB/shard/s3 --logpath=/www/mongoDB/shard/log/s3.log --logappend --fork
+
+-- 2. 启动Config Server
+mkdir -p /www/mongoDB/shard/config
+/usr/local/mongoDB/bin/mongod --port 27100 --dbpath=/www/mongoDB/shard/config --logpath=/www/mongoDB/shard/log/config.log --logappend --fork
+
+-- 3. 启动Route Process，mongos启动参数中，chunkSize这一项是用来指定chunk的大小的，单位是MB，默认大小为200MB.
+
+/usr/local/mongoDB/bin/mongos --port 40000 --configdb localhost:27100 --fork --logpath=/www/mongoDB/shard/log/route.log --chunkSize 500
+
+-- 4. 配置Sharding,使用MongoDB Shell登录到mongos，添加Shard节点
+/usr/local/mongoDB/bin/mongo admin --port 40000
+db.runCommand({ addshard:"localhost:27020" })
+db.runCommand({ addshard:"localhost:27021" })
+db.runCommand({ addshard:"localhost:27022" })
+db.runCommand({ addshard:"localhost:27023" })
+
+db.runCommand({ enablesharding:"test" })
+db.runCommand({ shardcollection: "test.log", key: { id:1,time:1}})
+
+-- 5. 直接按照连接普通的mongo数据库那样，将数据库连接接入接口40000
+```
 
 
 
@@ -718,6 +839,10 @@ db.$cmd.sys.unlock.findOne()`
 
 ### 数据备份、恢复与迁移管理 
 ```sql
+
+mongodump -h dbhost -d dbname -c collection -o dbdirectory
+mongorestore -h dbhost -d dbname -c collection --directoryperdb dbdirectory
+
 -- 备份全部数据库
 mkdir testbak
 mongodump 
@@ -739,6 +864,64 @@ mongoimport -d pagedb -c page --type csv --headerline --drop < csvORtsvFile.csv
 -- 将文件csvORtsvFile.csv的数据导入到pagedb数据库的page集合中，使用cvs或tsv文件的列名作为集合的列名。
 -- 需要注意的是，使用`--headerline`选项时，只支持csv和tsv文件。
 -- type支持的类型有三个：csv、tsv、json
+
+
+
+### MongoDB 监控
+```sql
+mongostat 
+mongotop
+mongotop 10   -- 等待时间
+mongotop --locks  -- 报告每个数据库的锁的使用
+```
+### MongoDB 自动增长
+MongoDB 没有像 SQL 一样有自动增长的功能， MongoDB 的 _id 是系统自动生成的12字节唯一标识。`db.createCollection("counters")`,通过`db.counters.insert({_id:"productid",sequence_value:0})` 来实现
+
+```javascript
+function getNextSequenceValue(sequenceName){
+   var sequenceDocument = db.counters.findAndModify(
+      {
+         query:{_id: sequenceName },
+         update: {$inc:{sequence_value:1}},
+         new:true
+      });
+   return sequenceDocument.sequence_value;
+}
+```
+
+```sql
+    db.products.insert({
+       "_id":getNextSequenceValue("productid"),
+       "product_name":"Apple iPhone",
+       "category":"mobiles"
+    })
+
+    db.products.insert({
+   "_id":getNextSequenceValue("productid"),
+   "product_name":"Samsung S3",
+   "category":"mobiles"})
+
+   db.products.find()
+```
+### 关于ObjectId
+> 前4个字节表示时间戳
+> 接下来的3个字节是机器标识码
+> 紧接的两个字节由进程id组成（PID）
+> 最后三个字节是随机数。
+```sql
+    newObjectId = ObjectId()
+    myObjectId = ObjectId("5349b4ddd2781d08c09890f4")
+    ObjectId("5349b4ddd2781d08c09890f4").getTimestamp()
+
+    new ObjectId().str
+```
+
+### GridFS 添加文件
+
+```
+mongofiles.exe -d gridfs put song.mp3
+db.fs.files.find()
+db.fs.chunks.find({files_id:ObjectId('534a811bf8b4aa4d33fdf94d')})
 
 ```
 - [命令参考与更新](https://docs.mongodb.com/v3.2/tutorial/access-mongo-shell-help/)
