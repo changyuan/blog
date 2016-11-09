@@ -679,63 +679,90 @@ db.customers.dropIndexes();
 
 
 ### Mongodb复制
-
-#### 主从复制
+mongod --help
+#### 主从读写分离（旧版本的，将用replica 副本集代替）
 通过主数据库的`OpLog`日志来复制,如果配置成功可看见`sync_pullOpLog`
 ```sql
--- 一主两从
-mongod --dbpath='xxxx' --master
-mongod --dbpath=xxxx --port=8888 --slave --source=127.0.0.1:27017
-mongod --dbpath=xxxx --port=8887 --slave --source=127.0.0.1:27017
-```
+-- 一主两从，主服务器不写默认端口 27017
+mongod --dbpath=E:\MongoDB\datamaster --master
+mongod --dbpath=E:\MongoDB\dataslave --port=27018 --slave --source=127.0.0.1:27017
+mongod --dbpath=E:\MongoDB\dataslave1 --port=27019 --slave --source=127.0.0.1:27017
+-- 测试同步
+mongo 127.0.0.1:27017
+db.users.insert({name:"tom",age:10})
+db.users.insert({name:"lucy",age:13})
 
-#### 副本集（ --replSet）
+-- 在从服务器上查看
+db.usrs.find();
+```
+主从配置好之后，从服务器默认是不可读取的，如果出现了 `error: { "$err" : "not master and slaveok=false", "code" : 13435 }` 这个错误，需要在从服务器上执行`rs.slaveok()`,之后再从服务器上查询即可。
+
+#### 副本集(代替旧的主从)（ --replSet）
 1. 该集群没有特定的主数据库
 2. 如果哪个主数据库宕机了，集群中就会推选出一个从属数据库作为主数据库顶上，这就具备了自动故障恢复功能
-> N 个节点的集群
+> N 个节点的集群(至少3个)
 > 任何节点可作为主节点
 > 所有写入操作都在主节点上
 > 自动故障转移
 > 自动恢复
 
+![replica](/images/replica.jpg)
+
 我们使用同一个MongoDB来做MongoDB主从的实验， 操作步骤如下：
 关闭正在运行的MongoDB服务器。
-`mongod --port 27017 --dbpath "E:\MongoDB\data" --replSet rs0`
+`mongod --port 27017 --dbpath=E:\MongoDB\datamaster --replSet rs0`
 以上实例会启动一个名为rs0的MongoDB实例，其端口号为27017。
 启动后打开命令提示框并连接上mongoDB服务。
 在Mongo客户端使用命令`rs.initiate()`来启动一个新的副本集。
 我们可以使用`rs.conf()`来查看副本集的配置
 查看副本集状态使用 `rs.status()` 命令
 
-在不同机机子上，需要建立集群名称
+在不同机机子上，需要建立集群名称,具体可以参考如下：（示例在一个机子上，用端口区分）
 ```
-mongod --dbpath=xxxx --port=2222  --replSet jiqun_name/192.168.1.1:3333
-mongod --dbpath=xxxx --port=3333  --replSet jiqun_name/192.168.1.2:2222
-rs.initiate({replSetInitiate:{
-    _id:"jiqun_name",
+mongod --dbpath=E:\MongoDB\replsetmaster --port=27017  --replSet replset
+mongod --dbpath=E:\MongoDB\replsetslave --port=27018 --replSet replset
+mongod --dbpath=E:\MongoDB\replsetslave1 --port=27019  --replSet replset
+-- 在任意一个`mongo` 初始化副本集，replset 为上面的副本集名称
+
+rs.initiate({
+    _id:"replset",
     members:[
     {
+        _id:0,
+        host:"127.0.0.1:27017"
+    },
+    {
         _id:1,
-        host:"192.168.1.1:3333"
+        host:"127.0.0.1:27018"
     },
     {
         _id:2,
-        host:"192.168.1.2:2222"
-    },
+        host:"127.0.0.1:27019"
+    }
     ]
-}})
+})
+
+
+-- 测试同步
+mongo 127.0.0.1:27017
+db.users.insert({name:"tom",age:10})
+db.users.insert({name:"lucy",age:13})
+
+-- 在第二个服务器上查看
+db.usrs.find();
+-- 如果出现错误`not master and slaveok=false` ,默认是从主节点读写数据的，副本节点上不允许读，需要设置副本节点可以读,然后执行 `db.getMongo().setSlaveOk()` 或者`rs.slaveOk()`即可
+
 
 -- rs.addArb() 使用这个追加一个仲裁服务器
+mongod --dbpath=xxxx --port=27020 --replSet replset
+rs.addArb("192.168.1.2:27020")
 
-mongod --dbpath=xxxx --port=4444 --replSet jiqun_name/192.168.1.2:2222
-rs.addArb("192.168.1.2:4444")
-
--- 最后查看副本集状态使用 `rs.status()` 命令
+-- rs.add 陆续增加更多的副本
+rs.add("192.168.1.2:27021")
 
 ```
-#### 副本集添加成员
-`rs.add("mongod1.net:27017")`
-判断当前运行的Mongo服务是否为主节点可以使用命令`db.isMaster()`,MongoDB的副本集与我们常见的主从有所不同，主从在主机宕机后所有服务将停止，而副本集在主机宕机后，副本会接管主节点成为主节点，不会出现宕机，无缝切换
+最后查看副本集状态使用 `rs.status()` 命令。判断当前运行的Mongo服务是否为主节点可以使用命令`db.isMaster()`,MongoDB的副本集与我们常见的主从有所不同，主从在主机宕机后所有服务将停止，而副本集在主机宕机后，副本会接管主节点成为主节点，不会出现宕机，无缝切换
+
 
 ### 分片技术（Shard）
 在Mongodb里面存在另一种集群(cluster)，就是分片技术,可以满足MongoDB数据量大量增长的需求。
@@ -768,32 +795,49 @@ mkdir -p /www/mongoDB/shard/s2
 mkdir -p /www/mongoDB/shard/s3
 mkdir -p /www/mongoDB/shard/log
 
-/usr/local/mongoDB/bin/mongod --port 27020 --dbpath=/www/mongoDB/shard/s0 --logpath=/www/mongoDB/shard/log/s0.log --logappend --fork
-/usr/local/mongoDB/bin/mongod --port 27021 --dbpath=/www/mongoDB/shard/s1 --logpath=/www/mongoDB/shard/log/s1.log --logappend --fork
-/usr/local/mongoDB/bin/mongod --port 27022 --dbpath=/www/mongoDB/shard/s2 --logpath=/www/mongoDB/shard/log/s2.log --logappend --fork
-/usr/local/mongoDB/bin/mongod --port 27023 --dbpath=/www/mongoDB/shard/s3 --logpath=/www/mongoDB/shard/log/s3.log --logappend --fork
+/usr/local/mongoDB/bin/mongod --port 27020 --dbpath=E:/MongoDB/shard/s0 --logpath=E:/MongoDB/shard/log/s0.log --logappend
+/usr/local/mongoDB/bin/mongod --port 27021 --dbpath=E:/MongoDB/shard/s1 --logpath=E:/MongoDB/shard/log/s1.log --logappend
+/usr/local/mongoDB/bin/mongod --port 27022 --dbpath=E:/MongoDB/shard/s2 --logpath=E:/MongoDB/shard/log/s2.log --logappend
+/usr/local/mongoDB/bin/mongod --port 27023 --dbpath=E:/MongoDB/shard/s3 --logpath=E:/MongoDB/shard/log/s3.log --logappend
 
--- 2. 启动Config Server
+-- 2. 启动Config Server,这里只有一台config server 如果不是一台，添加 `--configsvr` 参数
 mkdir -p /www/mongoDB/shard/config
-/usr/local/mongoDB/bin/mongod --port 27100 --dbpath=/www/mongoDB/shard/config --logpath=/www/mongoDB/shard/log/config.log --logappend --fork
+/usr/local/mongoDB/bin/mongod --port 27100 --configsvr --dbpath=E:/MongoDB/shard/config --logpath=E:/MongoDB/shard/log/config.log --logappend
 
 -- 3. 启动Route Process，mongos启动参数中，chunkSize这一项是用来指定chunk的大小的，单位是MB，默认大小为200MB.
 
-/usr/local/mongoDB/bin/mongos --port 40000 --configdb localhost:27100 --fork --logpath=/www/mongoDB/shard/log/route.log --chunkSize 500
+/usr/local/mongoDB/bin/mongos --port 40000 --configdb localhost:27100 --logpath=E:/MongoDB/shard/log/route.log --chunkSize 200
 
--- 4. 配置Sharding,使用MongoDB Shell登录到mongos，添加Shard节点
+-- 4. 配置Sharding,使用MongoDB Shell登录到mongos，添加Shard节点,然后按照普通的mongo数据库那样，将数据库连接接入接口40000
 /usr/local/mongoDB/bin/mongo admin --port 40000
+
+
 db.runCommand({ addshard:"localhost:27020" })
 db.runCommand({ addshard:"localhost:27021" })
 db.runCommand({ addshard:"localhost:27022" })
 db.runCommand({ addshard:"localhost:27023" })
-
 db.runCommand({ enablesharding:"test" })
-db.runCommand({ shardcollection: "test.log", key: { id:1,time:1}})
+db.runCommand({ shardcollection: "users", key: { id:1,time:1}})
+-- 或者下面写写法是一样的
+sh.addShard("localhost:27020");
+sh.addShard("localhost:27021");
+sh.addShard("localhost:27022");
+sh.addShard("localhost:27023");
+sh.enableSharding("test");
+-- sh.shardCollection("<database>.<collection>", shard-key-pattern) 按照collection的key来分片
+sh.shardCollection("test.users",{"name":1,"_id":1});
 
--- 5. 直接按照连接普通的mongo数据库那样，将数据库连接接入接口40000
+-- 5. 插入数据,测试分片
+    use test
+
+    for(var i=0;i<=100000;i++) {
+        db.users.insert({name:"lucy"+i,age:i});
+    }
+
+-- 6. 查看分片信息
+sh.status()
+
 ```
-
 
 
 
@@ -916,13 +960,36 @@ function getNextSequenceValue(sequenceName){
     new ObjectId().str
 ```
 
-### GridFS 添加文件
+### GridFS 
+GridFS 用于存储和恢复那些超过16M（BSON文件限制）的文件(如：图片、音频、视频等)。
+GridFS 也是文件存储的一种方式，但是它是存储在MonoDB的集合中。
+GridFS 可以更好的存储大于16M的文件。
+GridFS 会将大文件对象分割成多个小的chunk(文件片段),一般为256k/个,每个chunk将作为MongoDB的一个文档(document)被存储在chunks集合中。
+GridFS 用两个集合来存储一个文件：`fs.files`与`fs.chunks`。
+```sql
+ --fs.files
+{
+   "filename": "test.txt",
+   "chunkSize": NumberInt(261120),
+   "uploadDate": ISODate("2014-04-13T11:32:33.557Z"),
+   "md5": "7b762939321e146569b07f72c62cca4f",
+   "length": NumberInt(646)
+}
 
-```
+-- fs.chunks
+{
+   "files_id": ObjectId("534a75d19f54bfec8a2fe44b"),
+   "n": NumberInt(0),
+   "data": "Mongo Binary Data"
+}
+
+-- 添加文件
 mongofiles.exe -d gridfs put song.mp3
 db.fs.files.find()
+
+--_id 获取区块(chunk)
 db.fs.chunks.find({files_id:ObjectId('534a811bf8b4aa4d33fdf94d')})
 
 ```
-- [命令参考与更新](https://docs.mongodb.com/v3.2/tutorial/access-mongo-shell-help/)
-- [参考](http://www.cnblogs.com/huangxincheng/archive/2012/02/21/2361205.html)
+
+- [参考](https://docs.mongodb.com/v3.2/tutorial/access-mongo-shell-help/)
