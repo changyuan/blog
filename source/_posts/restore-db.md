@@ -11,7 +11,7 @@ categories:
 ![](/images/restore-db/master-slave.png)
 或者主主架构：
 ![](/images/restore-db/master-master.png)
- 
+<!-- more --> 
 如果此时主库宕机，可以：
 > 1. 一个从库顶上，重建集群
 > 2. 流量迁移到另一个主库
