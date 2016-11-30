@@ -1,5 +1,5 @@
 ---
-title: MangoDB 入门
+title: MangoDB 学习指南
 date: 2016-11-02 17:27:38
 updated: 2016-11-02 17:27:38
 tags:
