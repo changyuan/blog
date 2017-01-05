@@ -1,5 +1,5 @@
 ---
-title: 观察者模式
+title: 观察者模式(observer pattern)
 date: 2015-09-22
 tags: 
 - design pattern
@@ -58,7 +58,7 @@ $ul->addCustomer( "Jack" );
 ```
 
 
-#### 示例2 
+## 示例2 
 使用了php中的 SplSubject,SplObserver 主体对象和观察者对象类
 ```php
 
