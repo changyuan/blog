@@ -109,6 +109,7 @@ flex-shrink:
 
 ### DEMO
 
+[参考](http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html)
 [骰子](https://gist.github.com/changyuan/cce6e8818c038760d8cadccfd8f96824)
 [圣怀布局](https://gist.github.com/changyuan/02c14ca2aabc7107950d0056fa654522)
 [常用后台布局](https://gist.github.com/changyuan/77cfcd7344a8522b7e365865a0428c2d)

@@ -42,6 +42,9 @@ vagrant box list
 
 `vagrant init {title}`  ，title：为`config.vm.box`重命名，title可略则默认的`config.vm.box=”base”`
 
+# demo
+vagrant box add centos6 https://github.com/tommy-muehle/puppet-vagrant-boxes/releases/download/1.0.0/centos-6.6-x86_64.box
+
 ```
 
 
@@ -61,10 +64,10 @@ vagrant ssh
 
 # windows 用其他ssh链接工具
 
-# Host：127.0.0.1
-# Port：2200
-# Username：vagrant
-# password：vagrant
+ Host：127.0.0.1
+ Port：2200
+ Username：vagrant
+ password：vagrant
 
 ```
 
@@ -77,7 +80,7 @@ vagrant package
 # 之后别人拿到box，相当于安装了一个box又 ，之后就直接初始化这个
 vagrant box add hahaha ~/box/package.box  # 添加 package.box 镜像并命名为 hahaha
 
-cd ~/dev  # 切换到项目目录
+cd ~/dev  # 切换到项目目录,之后初始化
 vagrant init hahaha  
 
 ```
@@ -325,3 +328,6 @@ echo "Done!"
 info "Install composer"
 curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 ```
+
+[示例参考](http://www.yiichina.com/tutorial/979)
+[示例参考](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/start-installation.md)
