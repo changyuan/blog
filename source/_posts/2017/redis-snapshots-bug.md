@@ -18,7 +18,9 @@ categories:
 
 运行info命令查看`redis`快照的状态，如下：
 
-`rdb_last_bgsave_status:err`
+```bash
+rdb_last_bgsave_status:err
+```
 
 
 解决方案如下：
