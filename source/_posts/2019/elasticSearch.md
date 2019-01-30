@@ -20,6 +20,9 @@ list all docs in index
 
 > curl -X GET 'http://localhost:9200/sample/_search'
 
+
+<!--more-->
+
 query using URL parameters
 
 > curl -X GET http://localhost:9200/samples/_search?q=school:Harvard
@@ -31,7 +34,6 @@ query using URL parameters
 }'
 
 
-<!--more-->
 
 list index mapping
 
