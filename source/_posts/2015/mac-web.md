@@ -125,6 +125,49 @@ To have launchd start homebrew/php/php56 now and restart at login:
 
 
 
+DocumentRoot is /usr/local/var/www.
+
+The default ports have been set in /usr/local/etc/httpd/httpd.conf to 8080 and in
+/usr/local/etc/httpd/extra/httpd-ssl.conf to 8443 so that httpd can run without sudo.
+
+To have launchd start httpd now and restart at login:
+  brew services start httpd
+Or, if you don't want/need a background service you can just run:
+  apachectl start
+
+To enable PHP in Apache add the following to httpd.conf and restart Apache:
+    LoadModule php7_module /usr/local/opt/php@7.1/lib/httpd/modules/libphp7.so
+
+    <FilesMatch \.php$>
+        SetHandler application/x-httpd-php
+    </FilesMatch>
+
+Finally, check DirectoryIndex includes index.php
+    DirectoryIndex index.php index.html
+
+The php.ini and php-fpm.ini file can be found in:
+    /usr/local/etc/php/7.1/
+
+php@7.1 is keg-only, which means it was not symlinked into /usr/local,
+because this is an alternate version of another formula.
+
+If you need to have php@7.1 first in your PATH run:
+  echo 'export PATH="/usr/local/opt/php@7.1/bin:$PATH"' >> ~/.bash_profile
+  echo 'export PATH="/usr/local/opt/php@7.1/sbin:$PATH"' >> ~/.bash_profile
+
+For compilers to find php@7.1 you may need to set:
+  export LDFLAGS="-L/usr/local/opt/php@7.1/lib"
+  export CPPFLAGS="-I/usr/local/opt/php@7.1/include"
+
+
+To have launchd start php@7.1 now and restart at login:
+  brew services start php@7.1
+Or, if you don't want/need a background service you can just run:
+  php-fpm
+==> Summary
+
+
+
 ## mac 的一些工具
 
 ```bash
@@ -165,4 +208,39 @@ xcode-select --install
 ```bash
   brew cask install atom
 
+```
+
+## mac自启动目录
+```
+~/Library/LaunchAgents
+```
+
+## brew 使用方法
+```
+brew update                        　　#更新brew可安装包，建议每次执行一下
+brew search php55                    #搜索php5.5
+brew tap josegonzalez/php        #安装扩展<gihhub_user/repo>   ,可以获得更多的资源
+brew tap                                  #查看安装的扩展列表
+brew install php55                    #安装php5.5
+brew remove  php55                 #卸载php5.5
+brew upgrade php55                 #升级php5.5
+brew options php55                  #查看php5.5安装选项
+brew info    php55                    #查看php5.5相关信息
+brew home    php55                  #访问php5.5官方网站
+brew services list                      #查看系统通过 brew 安装的服务
+brew services cleanup               #清除已卸载无用的启动配置文件
+brew services restart php55       #重启php-fpm
+```
+
+### 由于homebrew上面的东西 很多要么被墙,要么死慢,需要换brew源(分为两部分)
+ 
+```
+替换homebrew默认源
+　　cd "$(brew --repo)" 　　//这个命令会进入到相应目录,可以pwd查看下
+　　cd "$(brew --repo)" git remote set-url origin git://mirrors.ustc.edu.cn/brew.git
+Homebrew Bottles源(二进制代码包)
+　　echo 'export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles' >> ~/.bash_profile 
+　　source ~/.bash_profile
+更新
+　　brew update
 ```
