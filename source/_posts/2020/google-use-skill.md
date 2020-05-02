@@ -25,6 +25,8 @@ a）加号
 
 在 Google 的输入框里，所有的空格都被 Google 理解为加号+。如果你输入的是 purpose of education那么 Google 返回的文章里既有“purpose”存在，也有“education”存在，但不一定有“purpose of education”存在。另外，过分常用的、单独存在没有意义的词汇往往被忽略掉，比如冠词“a”、“the”；介词“of”、“in”、“on”、“at”、“to”；连词“and”、“or”、“but”；从属连词“that”、“which”、“when”；代词“my”、“his”、“them”等等。
 
+<!-- more -->
+
 b）引号
 
 如果你想要找含有“purpose of education”这个词组的文章，那么你必须输入"purpose of education"。现在的 Google 已经可以处理 utf-8 大字符集了，所以，即便你在输入的时候使用的是全角字符（不是半角字符的"而是“或者”）Google也照样能够正确处理。比较一下两种输入返回的结果：purpose of education vs.“purpose of education”。再试试 the most important benefit of education 和 “the most important benefit of education”。这就是引号（“……”）的作用——返回“完整匹配”的结果。

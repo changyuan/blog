@@ -16,6 +16,8 @@ categories:
 [官方文档mysql 8.0 json](https://dev.mysql.com/doc/refman/8.0/en/json.html)
 
 
+<!-- more -->
+
 Name | Description
 ---|---
 ->|Return value from JSON column after evaluating path; equivalent to JSON_EXTRACT().

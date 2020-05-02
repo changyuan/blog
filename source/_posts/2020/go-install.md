@@ -21,6 +21,8 @@ categories:
 > goexport GOPATH=$HOME/www/go:$HOME/www/baxian/baxian_sea/doc/data/tokumxexport GOBIN=$HOME/www/bin
 
 
+<!-- more -->
+
 并在GOPATH下创建如下目录:
 
 ```bash

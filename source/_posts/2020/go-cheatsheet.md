@@ -57,6 +57,9 @@ categories:
 19. [Snippets](#snippets)
     * [Http-Server](#http-server)
 
+
+<!-- more -->
+
 ## Credits
 
 Most example code taken from [A Tour of Go](http://tour.golang.org/), which is an excellent introduction to Go.

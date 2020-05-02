@@ -34,3 +34,4 @@ golang 中使用goroutine 实现并发的，channels 在多个goroutine 间的�
 
 修改结构体的变量内容的时候，方法传入的结构体变量参数需要使用指针，也就是结构体的地址
 
+<!-- more -->
