@@ -70,7 +70,9 @@ theme: next
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repository: git@github.com:changyuan/changyuan.github.io.git
+  repo: 
+      github: git@github.com:changyuan/changyuan.github.io.git
+      gitee: git@gitee.com:changcrazy/changcrazy.git
   # branch: gh-pages
   branch: master
   # message: Site updated: {{ now('YYYY-MM-DD HH:mm:ss') }}
