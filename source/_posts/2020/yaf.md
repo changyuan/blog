@@ -1,7 +1,7 @@
 ---
 title: Yaf Yar使用
-date: 2020-05-02 14:51:38
-updated: 2020-05-02 14:51:38
+date: 2020-05-10 14:51:38
+updated: 2020-05-10 14:51:38
 tags:
 - yaf 
 - rewrite
@@ -155,7 +155,7 @@ sudo make install
 
 ```
 
-## 伪静态
+## 路由改写，伪静态
 
 ```php
 
@@ -222,3 +222,93 @@ $config = array(
 $router->addConfig(new Yaf_Config_Simple($config));
 
 ```
+
+## CLI模式
+
+### 第一种方式
+
+在`public`目录下新建`cli.php`文件
+
+```php
+
+if(php_sapi_name()!='cli'){
+    echo 'No authority';exit();
+}
+
+$application = new Yaf_Application(GLOBAL_CONFIG_PATH.'application.ini');
+$application->execute("main1");
+
+function main1() {
+    echo "hello\n";
+}
+
+```
+
+运行 `php cli.php` 直接执行，运行函数
+
+
+### 第二种方式
+
+在`public`目录下新建`cli.php`文件
+
+
+```php
+<?php
+/*
+ * cli命令行
+ * 此文件不允许http方式访问
+ */
+if (php_sapi_name() != 'cli') {
+    echo 'No authority';exit();
+}
+define('ENVIRONMENT', 'develop'); //生成环境请修改为product
+define('ROOT_PATH', dirname(__FILE__));
+define('APP_PATH', realpath(ROOT_PATH . '/../')); //指向上一级
+
+define('GLOBAL_CONFIG_PATH', '/home/www/config/');
+defined('REFERER') ? REFERER : define('REFERER', isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/'); //上一页
+
+switch (ENVIRONMENT) {
+    case 'develop':
+        error_reporting(E_ALL & ~E_NOTICE); //报告所有的错误，但除了E_NOTICE这一种
+        ini_set('display_errors', 1);
+        ini_set('yaf.environ', 'develop');
+        break;
+    case 'product':
+        ini_set('display_errors', 0);
+        break;
+    default:
+        header('HTTP/1.1 503 Service Unavailable.', true, 503);
+        echo 'The application environment is not set correctly.';
+        exit(1); // EXIT_ERROR
+}
+
+$application = new Yaf_Application(GLOBAL_CONFIG_PATH . 'application.ini');
+//加载cli的bootstrap配置内容
+$application->bootstrap();
+
+//获取argv参数
+$uri_r = explode('/', $argv[1]);
+$count = count($uri_r);
+
+if ($count > 3 && $count <= 1) {
+    echo 'uri error!';
+    exit;
+} elseif ($count == 2) {
+    // 默认模块为空
+    array_unshift($uri_r, '');
+}
+
+list($module, $controller, $action) = $uri_r;
+
+$params = [];
+if (isset($argv[2]) && !empty($argv[2])) {
+    parse_str($argv[2], $params);
+}
+
+$request = new Yaf_Request_Simple('CLI', $module, $controller, $action, $params);
+$application->getDispatcher()->returnResponse(true)->dispatch($request);
+
+```
+
+使用方法运行`php cli2.php  account/account/login "name=Bill&age=60"`,分别为模块，控制器，方法  参数一定加上引号 , 其中参数在 `controller` 中 使用 `$this->getRequest()->getParams()` 控制器里使用这个方法接受参数。
