@@ -1,5 +1,5 @@
 ---
-title: k8s
+title: golang项目部署(Dockerfile)
 date: 2021-09-27 09:50:08
 updated: 2021-09-27 09:50:08
 tags:
@@ -240,5 +240,5 @@ docker images
 # 使用 构建出来的镜像运行容器
 docker run --name=demo.changkaixin.cn -itd -p 9888:9888 -v /e/p/demo.changkaixn.cn:/home/www/demo.changkaixn.cn changcrazy/kaixindemo:v1
 
-
+docker tag xxx(images_id) 
 ```
