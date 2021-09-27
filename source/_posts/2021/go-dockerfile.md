@@ -240,5 +240,11 @@ docker images
 # 使用 构建出来的镜像运行容器
 docker run --name=demo.changkaixin.cn -itd -p 9888:9888 -v /e/p/demo.changkaixn.cn:/home/www/demo.changkaixn.cn changcrazy/kaixindemo:v1
 
-docker tag xxx(images_id) 
+# 登陆的自己镜像仓库，如果官方的只需要 docker login
+docker login --username=changyuan@1995573026294914 registry.cn-hangzhou.aliyuncs.com
+# tag 版本
+docker tag [ImageId] registry.cn-hangzhou.aliyuncs.com/kg_base/go-base:[镜像版本号]
+# push
+docker push registry.cn-hangzhou.aliyuncs.com/kg_base/go-base:[镜像版本号]
+
 ```
