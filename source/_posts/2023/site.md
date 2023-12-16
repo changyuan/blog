@@ -9,4 +9,3 @@ categories:
 # 网址
 
 - [http://www.google.cn/ncr](http://www.google.cn/ncr)
-- [http://www.google.cn/ncr](http://www.google.cn/ncr)

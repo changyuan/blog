@@ -72,9 +72,9 @@ deploy:
   type: git
   repo: 
       github: git@github.com:changyuan/changyuan.github.io.git
-      gitee: git@gitee.com:changcrazy/changcrazy.git
-  # branch: gh-pages
-  branch: master
+      # gitee: git@gitee.com:changcrazy/changcrazy.git
+  branch: gh-pages
+  # branch: master
   # message: Site updated: {{ now('YYYY-MM-DD HH:mm:ss') }}
 
 # duoshuo_info:
