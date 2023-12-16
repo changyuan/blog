@@ -6,6 +6,6 @@ tags:
 categories:
 ---
 
-# 网址
+# website
 
-- [http://www.google.cn/ncr](http://www.google.cn/ncr)
+- [google](http://www.google.com.hk/ncr)

@@ -83,3 +83,23 @@ deploy:
 # Share
 # duoshuo_share: true
 
+# hexo-generator-searchdb
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
+  content: true
+
+symbols_count_time:
+  # 每篇文章显示
+  symbols: true
+  time: true
+  # 文章底部显示
+  total_symbols: false  
+  total_time: false
+  # 是否统计代码块
+  exclude_codeblock: false
+  awl: 2
+  wpm: 275
+  suffix: "mins."
